@@ -193,6 +193,7 @@ class Register extends React.Component {
               style={{ fontSize: 77 }}
               className='register-logo'
             />
+            <h2>Register to PexChat</h2>
             <TextField
               id='outlined-username'
               label='Username'
