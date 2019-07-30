@@ -1,0 +1,13 @@
+.already-member {
+  font-size: 0.8rem;
+  color: gray;
+
+  .login-link {
+    text-decoration: none;
+    font-weight: 600;
+  }
+}
+
+.error-message {
+  display: flex;
+}
