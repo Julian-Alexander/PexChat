@@ -19,8 +19,19 @@ import {
 } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import firebase from '../../firebase';
+import { withStyles } from '@material-ui/core/styles';
 
 import './Register.styles.scss';
+
+const styles = {
+  root: {
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: 'red'
+      }
+    }
+  }
+};
 
 class Register extends React.Component {
   state = {
@@ -29,7 +40,8 @@ class Register extends React.Component {
     password: '',
     passwordConfirmation: '',
     showPassword: false,
-    errors: []
+    errors: [],
+    loading: false
   };
 
   isFormValid = () => {
@@ -38,6 +50,10 @@ class Register extends React.Component {
 
     if (this.isFormEmpty(this.state)) {
       error = { message: 'All fields required!' };
+      this.setState({ errors: errors.concat(error) });
+      return false;
+    } else if (!this.isUsernameValid(this.state)) {
+      error = { message: 'Username needs 4 digits minimum' };
       this.setState({ errors: errors.concat(error) });
       return false;
     } else if (!this.isPasswordValid(this.state)) {
@@ -58,6 +74,14 @@ class Register extends React.Component {
     );
   };
 
+  isUsernameValid = ({ username }) => {
+    if (username.length < 4) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   isPasswordValid = ({ password, passwordConfirmation }) => {
     if (password.length < 6 || passwordConfirmation.length < 6) {
       return false;
@@ -70,6 +94,12 @@ class Register extends React.Component {
 
   handleChange = event => {
     this.setState({ [event.target.name]: event.target.value });
+  };
+
+  handleInputError = (errors, inputName) => {
+    return errors.some(error => error.message.toLowerCase().includes(inputName))
+      ? this.props.classes.root
+      : '';
   };
 
   handleClickShowPassword = () => {
@@ -86,14 +116,20 @@ class Register extends React.Component {
   handleSubmit = event => {
     event.preventDefault();
     if (this.isFormValid()) {
+      this.setState({ errors: [], loading: true });
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.state.email, this.state.password)
         .then(createdUser => {
           console.log(createdUser);
+          this.setState({ loading: false });
         })
         .catch(err => {
           console.error(err);
+          this.setState({
+            errors: this.state.errors.concat(err),
+            loading: false
+          });
         });
     }
   };
@@ -105,7 +141,8 @@ class Register extends React.Component {
       password,
       passwordConfirmation,
       showPassword,
-      errors
+      errors,
+      loading
     } = this.state;
 
     return (
@@ -133,7 +170,7 @@ class Register extends React.Component {
               id='outlined-username'
               label='Username'
               name='username'
-              className=''
+              className={this.handleInputError(errors, 'username')}
               value={username}
               onChange={this.handleChange}
               margin='normal'
@@ -151,7 +188,7 @@ class Register extends React.Component {
               id='outlined-email'
               label='Email'
               name='email'
-              className=''
+              className={this.handleInputError(errors, 'email')}
               value={email}
               onChange={this.handleChange}
               margin='normal'
@@ -170,7 +207,7 @@ class Register extends React.Component {
               id='outlined-password'
               label='Password'
               name='password'
-              className=''
+              className={this.handleInputError(errors, 'password')}
               value={password}
               onChange={this.handleChange}
               margin='normal'
@@ -200,7 +237,7 @@ class Register extends React.Component {
               id='outlined-passwordConfirmation'
               label='Password Confirmation'
               name='passwordConfirmation'
-              className=''
+              className={this.handleInputError(errors, 'password')}
               value={passwordConfirmation}
               onChange={this.handleChange}
               margin='normal'
@@ -227,6 +264,8 @@ class Register extends React.Component {
               }}
             />
             <Button
+              disabled={loading}
+              className={loading ? 'loading' : ''}
               type='submit'
               size='large'
               variant='contained'
@@ -259,4 +298,4 @@ class Register extends React.Component {
   }
 }
 
-export default Register;
+export default withStyles(styles)(Register);
