@@ -15,6 +15,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import firebase from '../../firebase';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -78,7 +79,8 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function PrimarySearchAppBar() {
+const Header = props => {
+  const currentUser = useSelector(state => state.user.currentUser);
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -126,8 +128,8 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem key='user' onClick={handleMenuClose}>
-        Signed in as&nbsp;<strong>User</strong>
+      <MenuItem key='user' onClick={handleMenuClose} disabled={true}>
+        Signed in as&nbsp;<strong>{currentUser.displayName}</strong>
       </MenuItem>
       <MenuItem key='avatar' onClick={handleMenuClose}>
         Change Avatar
@@ -174,7 +176,7 @@ export default function PrimarySearchAppBar() {
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
+        <p>{currentUser.displayName}</p>
       </MenuItem>
     </Menu>
   );
@@ -247,4 +249,6 @@ export default function PrimarySearchAppBar() {
       {renderMenu}
     </div>
   );
-}
+};
+
+export default Header;
