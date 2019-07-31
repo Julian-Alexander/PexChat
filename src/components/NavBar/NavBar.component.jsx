@@ -31,13 +31,13 @@ export default function IconLabelTabs() {
         textColor='secondary'
         aria-label='icon label tabs example'
       >
+      <Tab icon={<TrackChanges />} label={`CHANNELS [${channels.length}]`} />
         <Tab icon={<PersonPin />} label='MEMBERS' />
         <Tab icon={<BubbleChart />} label='CHAT' />
-        <Tab icon={<TrackChanges />} label={`CHANNELS [${channels.length}]`} />
       </Tabs>
-      {value === 0 && <h1>Page 1</h1>}
-      {value === 1 && <h1>Page 2</h1>}
-      {value === 2 && <Channels />}
+      {value === 0 && <Channels />}
+      {value === 1 && <h1>Page 1</h1>}
+      {value === 2 && <h1>Page 2</h1>}
     </Paper>
   );
 }

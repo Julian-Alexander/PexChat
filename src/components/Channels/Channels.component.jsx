@@ -28,6 +28,9 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     backgroundColor: '#3366ff'
   },
+  channelAvatar: {
+    backgroundColor: '#99004d'
+  },
   inline: {
     display: 'inline'
   }
@@ -40,13 +43,28 @@ const Channels = props => {
   const [open, setOpen] = React.useState(false);
   const [channelTitle, setChannelTitle] = React.useState('');
   const [channelDetails, setChannelDetails] = React.useState('');
+  const [channels, setChannels] = React.useState([]);
   const [channelsRef, setChannelsRef] = React.useState(
     firebase.database().ref('channels')
   );
 
+  React.useEffect(
+    props => {
+      addListeners();
+    },
+    [props]
+  );
+
+  const addListeners = () => {
+    let loadedChannels = [];
+    channelsRef.on('child_added', snap => {
+      loadedChannels.push(snap.val());
+      setChannels(loadedChannels);
+    });
+  };
+
   const handleSubmit = event => {
     event.preventDefault();
-    console.log('log1');
     if (isFormValid(props)) {
       addChannel();
       console.log('channel added');
@@ -54,7 +72,7 @@ const Channels = props => {
   };
 
   const addChannel = () => {
-    const key = channelsRef.push().key
+    const key = channelsRef.push().key;
 
     const newChannel = {
       id: key,
@@ -73,7 +91,7 @@ const Channels = props => {
         setChannelTitle('');
         setChannelDetails('');
         handleClose();
-        console.log('test3 channel added');
+        console.log('Test 3, channel added');
       })
       .catch(err => {
         console.error(err);
@@ -99,14 +117,47 @@ const Channels = props => {
     handleClickOpen();
   }
 
+  const displayChannels = channels =>
+    channels.length > 0 &&
+    channels.map((channel, index) => (
+      <ListItem
+        alignItems='center'
+        button
+        key={channel.id}
+        selected={selectedIndex === index}
+        onClick={event => handleListItemClick(event, index)}
+      >
+        <ListItemAvatar>
+          <Avatar className={classes.channelAvatar}>{index}</Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          primary={channel.title}
+          secondary={
+            <React.Fragment>
+              <Typography
+                component='span'
+                variant='body2'
+                className={classes.inline}
+                color='textPrimary'
+              >
+                Details -{' '}
+              </Typography>
+              {channel.details}
+            </React.Fragment>
+          }
+        />
+        <Divider variant='inset' component='li' />
+      </ListItem>
+    ));
+
   return (
     <React.Fragment>
       <List className={classes.root}>
         <ListItem
           alignItems='center'
           button
-          selected={selectedIndex === 0}
-          onClick={event => OpenAndItemClick(event, 0)}
+          selected={selectedIndex === 99.9}
+          onClick={event => OpenAndItemClick(event, 99.9)}
         >
           <ListItemAvatar>
             <Avatar alt='Add Channel' className={classes.avatar}>
@@ -129,86 +180,7 @@ const Channels = props => {
           />
         </ListItem>
         <Divider variant='inset' component='li' />
-        <ListItem
-          alignItems='center'
-          button
-          selected={selectedIndex === 1}
-          onClick={event => handleListItemClick(event, 1)}
-        >
-          <ListItemAvatar>
-            <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
-          </ListItemAvatar>
-          <ListItemText
-            primary='Brunch this weekend?'
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component='span'
-                  variant='body2'
-                  className={classes.inline}
-                  color='textPrimary'
-                >
-                  Ali Connors
-                </Typography>
-                {" — I'll be in your neighborhood doing errands this…"}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-        <Divider variant='inset' component='li' />
-        <ListItem
-          alignItems='center'
-          button
-          selected={selectedIndex === 2}
-          onClick={event => handleListItemClick(event, 2)}
-        >
-          <ListItemAvatar>
-            <Avatar alt='Travis Howard' src='/static/images/avatar/2.jpg' />
-          </ListItemAvatar>
-          <ListItemText
-            primary='Summer BBQ'
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component='span'
-                  variant='body2'
-                  className={classes.inline}
-                  color='textPrimary'
-                >
-                  to Scott, Alex, Jennifer
-                </Typography>
-                {" — Wish I could come, but I'm out of town this…"}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-        <Divider variant='inset' component='li' />
-        <ListItem
-          alignItems='center'
-          button
-          selected={selectedIndex === 3}
-          onClick={event => handleListItemClick(event, 3)}
-        >
-          <ListItemAvatar>
-            <Avatar alt='Cindy Baker' src='/static/images/avatar/3.jpg' />
-          </ListItemAvatar>
-          <ListItemText
-            primary='Oui Oui'
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component='span'
-                  variant='body2'
-                  className={classes.inline}
-                  color='textPrimary'
-                >
-                  Sandra Adams
-                </Typography>
-                {' — Do you have Paris recommendations? Have you ever…'}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
+        {displayChannels(channels)}
       </List>
       <Dialog
         open={open}
