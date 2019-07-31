@@ -18,7 +18,8 @@ import {
   Button
 } from '@material-ui/core';
 import firebase from '../../firebase';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setCurrentChannel } from '../../actions/index.action';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -29,7 +30,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: '#3366ff'
   },
   channelAvatar: {
-    backgroundColor: '#99004d'
+    backgroundColor: '#e6005c'
   },
   inline: {
     display: 'inline'
@@ -38,6 +39,8 @@ const useStyles = makeStyles(theme => ({
 
 const Channels = props => {
   const currentUser = useSelector(state => state.user.currentUser);
+  const currentChannel = useSelector(state => state.channel.currentChannel);
+  const dispatch = useDispatch();
   const classes = useStyles();
   const [selectedIndex, setSelectedIndex] = React.useState();
   const [open, setOpen] = React.useState(false);
@@ -117,6 +120,15 @@ const Channels = props => {
     handleClickOpen();
   }
 
+  const ItemClickAndChangeChannel = (channel, event, index) => {
+    handleListItemClick(event, index);
+    changeChannel(channel);
+  };
+
+  const changeChannel = channel => {
+    dispatch(setCurrentChannel(channel));
+  };
+
   const displayChannels = channels =>
     channels.length > 0 &&
     channels.map((channel, index) => (
@@ -125,7 +137,7 @@ const Channels = props => {
         button
         key={channel.id}
         selected={selectedIndex === index}
-        onClick={event => handleListItemClick(event, index)}
+        onClick={event => ItemClickAndChangeChannel(channel, event, index)}
       >
         <ListItemAvatar>
           <Avatar className={classes.channelAvatar}>{index}</Avatar>
