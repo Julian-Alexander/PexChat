@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { BubbleChart, TrackChanges, PersonPin } from '@material-ui/icons';
+import Channels from '../Channels/Channels.component';
 
 const useStyles = makeStyles({
   root: {
@@ -14,6 +15,7 @@ const useStyles = makeStyles({
 export default function IconLabelTabs() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
+  const [channels, setChannels] = React.useState([]);
 
   function handleChange(event, newValue) {
     setValue(newValue);
@@ -31,11 +33,11 @@ export default function IconLabelTabs() {
       >
         <Tab icon={<PersonPin />} label='MEMBERS' />
         <Tab icon={<BubbleChart />} label='CHAT' />
-        <Tab icon={<TrackChanges />} label='CHANNELS' />
+        <Tab icon={<TrackChanges />} label={`CHANNELS [${channels.length}]`} />
       </Tabs>
       {value === 0 && <h1>Page 1</h1>}
       {value === 1 && <h1>Page 2</h1>}
-      {value === 2 && <h1>Page 3</h1>}
+      {value === 2 && <Channels />}
     </Paper>
   );
 }
