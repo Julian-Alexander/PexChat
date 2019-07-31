@@ -5,18 +5,40 @@ import App from './App';
 import Login from './components/Auth/Login.component';
 import Register from './components/Auth/Register.component';
 import * as serviceWorker from './serviceWorker';
+import firebase from './firebase';
 
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  withRouter
+} from 'react-router-dom';
 
-const Root = () => (
+class Root extends React.Component {
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.props.history.push('/');
+      }
+    });
+  }
+  render() {
+    return (
+      <Switch>
+        <Route exact path='/' component={App} />
+        <Route path='/login' component={Login} />
+        <Route path='/register' component={Register} />
+      </Switch>
+    );
+  }
+}
+
+const RootWithAuth = withRouter(Root);
+
+ReactDOM.render(
   <Router>
-    <Switch>
-      <Route exact path='/' component={App} />
-      <Route path='/login' component={Login} />
-      <Route path='/register' component={Register} />
-    </Switch>
-  </Router>
+    <RootWithAuth />
+  </Router>,
+  document.getElementById('root')
 );
-
-ReactDOM.render(<Root />, document.getElementById('root'));
 serviceWorker.unregister();
