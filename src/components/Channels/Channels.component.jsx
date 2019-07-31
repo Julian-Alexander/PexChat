@@ -17,6 +17,8 @@ import {
   TextField,
   Button
 } from '@material-ui/core';
+import firebase from '../../firebase';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -32,22 +34,53 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Channels = props => {
+  const currentUser = useSelector(state => state.user.currentUser);
   const classes = useStyles();
   const [selectedIndex, setSelectedIndex] = React.useState();
   const [open, setOpen] = React.useState(false);
-  const [channelTitle, setChannelTitle] = React.useState("");
-  const [channelDetails, setChannelDetails] = React.useState("");
+  const [channelTitle, setChannelTitle] = React.useState('');
+  const [channelDetails, setChannelDetails] = React.useState('');
+  const [channelsRef, setChannelsRef] = React.useState(
+    firebase.database().ref('channels')
+  );
 
   const handleSubmit = event => {
-      event.preventDefault();
-      console.log("log1");
-      if(isFormValid(props)) {
-          console.log("channel added");
-      }
-  }
+    event.preventDefault();
+    console.log('log1');
+    if (isFormValid(props)) {
+      addChannel();
+      console.log('channel added');
+    }
+  };
 
-  const isFormValid = (props) =>
-      channelTitle && channelDetails;
+  const addChannel = () => {
+    const key = channelsRef.push().key
+
+    const newChannel = {
+      id: key,
+      title: channelTitle,
+      details: channelDetails,
+      createdBy: {
+        name: currentUser.displayName,
+        avatar: currentUser.photoURL
+      }
+    };
+
+    channelsRef
+      .child(key)
+      .update(newChannel)
+      .then(() => {
+        setChannelTitle('');
+        setChannelDetails('');
+        handleClose();
+        console.log('test3 channel added');
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
+
+  const isFormValid = props => channelTitle && channelDetails;
 
   function handleListItemClick(event, index) {
     setSelectedIndex(index);
@@ -189,33 +222,33 @@ const Channels = props => {
             Additionally, give us a short description.
           </DialogContentText>
           <form onSubmit={handleSubmit}>
-          <TextField
-            autoFocus
-            margin='dense'
-            id='name'
-            label='Title'
-            value={channelTitle}
-            onChange={e => setChannelTitle(e.target.value)}
-            type='text'
-            fullWidth
-          />
-          <TextField
-            autoFocus
-            margin='dense'
-            id='name'
-            label='Description'
-            value={channelDetails}
-            onChange={e => setChannelDetails(e.target.value)}
-            type='text'
-            fullWidth
-          />
+            <TextField
+              autoFocus
+              margin='dense'
+              id='name'
+              label='Title'
+              value={channelTitle}
+              onChange={e => setChannelTitle(e.target.value)}
+              type='text'
+              fullWidth
+            />
+            <TextField
+              autoFocus
+              margin='dense'
+              id='name'
+              label='Description'
+              value={channelDetails}
+              onChange={e => setChannelDetails(e.target.value)}
+              type='text'
+              fullWidth
+            />
           </form>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color='primary'>
             Cancel
           </Button>
-          <Button type="submit" onClick={handleSubmit} color='primary'>
+          <Button type='submit' onClick={handleSubmit} color='primary'>
             Create
           </Button>
         </DialogActions>
