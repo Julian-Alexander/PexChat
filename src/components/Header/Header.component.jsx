@@ -14,12 +14,17 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import Avatar from '@material-ui/core/Avatar';
 import firebase from '../../firebase';
 import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1
+  },
+  avatar: {
+    width: 33,
+    height: 33
   },
   menuButton: {
     marginRight: theme.spacing(2)
@@ -174,7 +179,11 @@ const Header = props => {
           aria-haspopup='true'
           color='inherit'
         >
-          <AccountCircle />
+          <Avatar
+            alt='avatar'
+            src={currentUser.photoURL}
+            className={classes.avatar}
+          />
         </IconButton>
         <p>{currentUser.displayName}</p>
       </MenuItem>
