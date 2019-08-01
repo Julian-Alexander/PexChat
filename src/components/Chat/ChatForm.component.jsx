@@ -80,7 +80,7 @@ class Chat extends React.Component {
   };
 
   render() {
-    const { loading, errors } = this.state;
+    const { loading, errors, message } = this.state;
     const { classes } = this.props;
     return (
       <React.Fragment>
@@ -95,6 +95,7 @@ class Chat extends React.Component {
             onChange={this.handleChange}
             label='Message'
             name='message'
+            value={message}
             variant='outlined'
             id='custom-css-outlined-input'
             margin='dense'

@@ -155,7 +155,6 @@ const Channels = props => {
 
   const setActiveChan = channel => {
     setActiveChannel(channel.id);
-    console.log('cative', activeChannel);
   };
 
   const changeChannel = channel => {
