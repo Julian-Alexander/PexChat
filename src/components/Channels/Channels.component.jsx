@@ -42,11 +42,14 @@ const Channels = props => {
   const currentChannel = useSelector(state => state.channel.currentChannel);
   const dispatch = useDispatch();
   const classes = useStyles();
+  const isInitialMount = React.useRef(true);
   const [selectedIndex, setSelectedIndex] = React.useState();
   const [open, setOpen] = React.useState(false);
   const [channelTitle, setChannelTitle] = React.useState('');
   const [channelDetails, setChannelDetails] = React.useState('');
   const [channels, setChannels] = React.useState([]);
+  const [firstLoad, setFirstLoad] = React.useState(true);
+  const [activeChannel, setActiveChannel] = React.useState('');
   const [channelsRef, setChannelsRef] = React.useState(
     firebase.database().ref('channels')
   );
@@ -54,16 +57,41 @@ const Channels = props => {
   React.useEffect(
     props => {
       addListeners();
+      updateFirstLoad();
     },
     [props]
   );
+
+  React.useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      removeListeners();
+    }
+  }, []);
 
   const addListeners = () => {
     let loadedChannels = [];
     channelsRef.on('child_added', snap => {
       loadedChannels.push(snap.val());
       setChannels(loadedChannels);
+    //   firstChannel(loadedChannels);
     });
+  };
+
+  const firstChannel = channels => {
+    const firstChannel = channels[0];
+    if (firstLoad && channels.length > 0) {
+      dispatch(setCurrentChannel(firstChannel));
+    }
+  };
+
+  const updateFirstLoad = () => {
+    setFirstLoad(false);
+  };
+
+  const removeListeners = () => {
+    channelsRef.off();
   };
 
   const handleSubmit = event => {
@@ -125,7 +153,13 @@ const Channels = props => {
     changeChannel(channel);
   };
 
+  const setActiveChan = channel => {
+    setActiveChannel(channel.id);
+    console.log('cative', activeChannel);
+  };
+
   const changeChannel = channel => {
+    setActiveChan(channel);
     dispatch(setCurrentChannel(channel));
   };
 
