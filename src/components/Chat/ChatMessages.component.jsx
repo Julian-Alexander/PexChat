@@ -10,6 +10,7 @@ import {
   Container,
   Typography
 } from '@material-ui/core';
+import './Chat.styles.scss';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -37,6 +38,10 @@ const ChatMessages = ({ message, user }) => {
     return message.user.id === user.uid ? classes.own : classes.others;
   };
 
+  const isImage = (message) => {
+    return message.hasOwnProperty("image") && !message.hasOwnProperty("content");
+  }
+
   return (
     <List className={classes.root}>
       <ListItem alignItems='flex-start' className={isOwnMessage(message, user)}>
@@ -57,8 +62,13 @@ const ChatMessages = ({ message, user }) => {
                 className={classes.inline}
                 color='textPrimary'
               >
-                {`${message.content} - `}
+                {isImage(message) ? (
+                  <img src={message.image} className="image-message"/>
+                 ) : (
+                `${message.content}`                   
+                 )}
               </Typography>
+              <br/>
               {timeFromNow(message.timestamp)}
             </React.Fragment>
           }
