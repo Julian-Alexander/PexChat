@@ -6,7 +6,7 @@ import Tab from '@material-ui/core/Tab';
 import { BubbleChart, TrackChanges, PersonPin } from '@material-ui/icons';
 import Channels from '../Channels/Channels.component';
 import Chat from '../Chat/Chat.component';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles({
   root: {
@@ -19,7 +19,7 @@ export default function NavBar() {
   const currentUser = useSelector(state => state.user.currentUser);
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const [channels, setChannels] = React.useState([]);
+  const [channels] = React.useState([]);
   console.log('currentChannel 123', currentChannel);
   function handleChange(event, newValue) {
     setValue(newValue);

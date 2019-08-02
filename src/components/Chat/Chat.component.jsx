@@ -12,7 +12,8 @@ class Chat extends React.Component {
     messages: [],
     messagesLoading: true,
     channel: this.props.currentChannel,
-    user: this.props.currentUser
+    user: this.props.currentUser,
+    numUniqueUsers: ''
   };
 
   componentDidMount() {
@@ -36,7 +37,20 @@ class Chat extends React.Component {
         messages: loadedMessages,
         messagesLoading: false
       });
+      this.countUniqueUsers(loadedMessages);
     });
+  };
+
+  countUniqueUsers = messages => {
+    const uniqueUsers = messages.reduce((acc, message) => {
+      if (!acc.includes(message.user.name)) {
+        acc.push(message.user.name);
+      }
+      return acc;
+    }, []);
+    const plural = uniqueUsers.length > 1 || uniqueUsers.length === 0;
+    const numUniqueUsers = `${uniqueUsers.length} User${plural ? 's' : ''}`;
+    this.setState({ numUniqueUsers });
   };
 
   displayMessages = messages =>
@@ -49,12 +63,16 @@ class Chat extends React.Component {
       />
     ));
 
+  displayChannelName = channel => (channel ? `${channel.title}` : '');
+
   render() {
-    const { messagesRef, channel, messages, user } = this.state;
+    const { messagesRef, channel, messages, user, numUniqueUsers } = this.state;
     console.log('Currentchannel', channel);
     console.log('CurrentUser', user);
     return (
       <React.Fragment>
+        <div className='channel-title'>{this.displayChannelName(channel)}</div>
+        <div className='channel-users'>{numUniqueUsers}</div>
         <Container>{this.displayMessages(messages)}</Container>
         <ChatForm
           messagesRef={messagesRef}

@@ -164,7 +164,14 @@ class Chat extends React.Component {
       });
   };
   render() {
-    const { loading, errors, message, dialog, percentUploaded, uploadState } = this.state;
+    const {
+      loading,
+      errors,
+      message,
+      dialog,
+      percentUploaded,
+      uploadState
+    } = this.state;
     const { classes } = this.props;
     return (
       <React.Fragment>
@@ -198,7 +205,7 @@ class Chat extends React.Component {
                     Send
                   </Button>
                   <Button
-                    disabled={loading}
+                    disabled={loading || uploadState === 'uploading...'}
                     className={loading ? 'loading' : ''}
                     type='submit'
                     size='small'
@@ -217,9 +224,9 @@ class Chat extends React.Component {
               )
             }}
           />
-          <ProgressBar 
-          uploadState={uploadState}
-          percentUploaded={percentUploaded}
+          <ProgressBar
+            uploadState={uploadState}
+            percentUploaded={percentUploaded}
           />
         </Container>
       </React.Fragment>

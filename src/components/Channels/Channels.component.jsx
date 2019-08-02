@@ -39,7 +39,6 @@ const useStyles = makeStyles(theme => ({
 
 const Channels = props => {
   const currentUser = useSelector(state => state.user.currentUser);
-  const currentChannel = useSelector(state => state.channel.currentChannel);
   const dispatch = useDispatch();
   const classes = useStyles();
   const isInitialMount = React.useRef(true);
@@ -48,57 +47,53 @@ const Channels = props => {
   const [channelTitle, setChannelTitle] = React.useState('');
   const [channelDetails, setChannelDetails] = React.useState('');
   const [channels, setChannels] = React.useState([]);
-  const [firstLoad, setFirstLoad] = React.useState(true);
-  const [activeChannel, setActiveChannel] = React.useState('');
-  const [channelsRef, setChannelsRef] = React.useState(
-    firebase.database().ref('channels')
-  );
-
+  //   const [firstLoad, setFirstLoad] = React.useState(true);
+  //   const [activeChannel, setActiveChannel] = React.useState('');
+  const [channelsRef] = React.useState(firebase.database().ref('channels'));
   React.useEffect(
     props => {
+      const addListeners = () => {
+        let loadedChannels = [];
+        channelsRef.on('child_added', snap => {
+          loadedChannels.push(snap.val());
+          setChannels(loadedChannels);
+
+          //   firstChannel(loadedChannels);
+        });
+      };
       addListeners();
-      updateFirstLoad();
+      //   updateFirstLoad();
     },
-    [props]
+    [props, channelsRef]
   );
 
   React.useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
     } else {
+      const removeListeners = () => {
+        channelsRef.off();
+      };
+
       removeListeners();
     }
-  }, []);
+  }, [channelsRef]);
 
-  const addListeners = () => {
-    let loadedChannels = [];
-    channelsRef.on('child_added', snap => {
-      loadedChannels.push(snap.val());
-      setChannels(loadedChannels);
-    //   firstChannel(loadedChannels);
-    });
-  };
+  //   const firstChannel = channels => {
+  //     const firstChannel = channels[0];
+  //     if (firstLoad && channels.length > 0) {
+  //       dispatch(setCurrentChannel(firstChannel));
+  //     }
+  //   };
 
-  const firstChannel = channels => {
-    const firstChannel = channels[0];
-    if (firstLoad && channels.length > 0) {
-      dispatch(setCurrentChannel(firstChannel));
-    }
-  };
-
-  const updateFirstLoad = () => {
-    setFirstLoad(false);
-  };
-
-  const removeListeners = () => {
-    channelsRef.off();
-  };
+  //   const updateFirstLoad = () => {
+  //     setFirstLoad(false);
+  //   };
 
   const handleSubmit = event => {
     event.preventDefault();
     if (isFormValid(props)) {
       addChannel();
-      console.log('channel added');
     }
   };
 
@@ -153,12 +148,12 @@ const Channels = props => {
     changeChannel(channel);
   };
 
-  const setActiveChan = channel => {
-    setActiveChannel(channel.id);
-  };
+  //   const setActiveChan = channel => {
+  //     setActiveChannel(channel.id);
+  //   };
 
   const changeChannel = channel => {
-    setActiveChan(channel);
+    // setActiveChan(channel);
     dispatch(setCurrentChannel(channel));
   };
 

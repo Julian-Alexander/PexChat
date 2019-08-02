@@ -7,7 +7,6 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
-  Container,
   Typography
 } from '@material-ui/core';
 import './Chat.styles.scss';
@@ -18,11 +17,13 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper
   },
   own: {
-    backgroundColor: '#ccebff'
+    backgroundColor: '#ccebff',
+    borderRadius: 11
   },
   others: {
     width: '100%',
-    backgroundColor: '#ffe6cc'
+    backgroundColor: '#ffe6cc',
+    borderRadius: 11
   },
   inline: {
     display: 'inline'
@@ -38,9 +39,11 @@ const ChatMessages = ({ message, user }) => {
     return message.user.id === user.uid ? classes.own : classes.others;
   };
 
-  const isImage = (message) => {
-    return message.hasOwnProperty("image") && !message.hasOwnProperty("content");
-  }
+  const isImage = message => {
+    return (
+      message.hasOwnProperty('image') && !message.hasOwnProperty('content')
+    );
+  };
 
   return (
     <List className={classes.root}>
@@ -63,12 +66,12 @@ const ChatMessages = ({ message, user }) => {
                 color='textPrimary'
               >
                 {isImage(message) ? (
-                  <img src={message.image} className="image-message"/>
-                 ) : (
-                `${message.content}`                   
-                 )}
+                  <img src={message.image} alt="User Avatar" className='image-message' />
+                ) : (
+                  `${message.content}`
+                )}
               </Typography>
-              <br/>
+              <br />
               {timeFromNow(message.timestamp)}
             </React.Fragment>
           }
