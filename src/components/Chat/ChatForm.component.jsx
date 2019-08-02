@@ -6,7 +6,8 @@ import {
   Container
 } from '@material-ui/core';
 import uuidv4 from 'uuid/v4';
-import DialogModal from '../Assets/DialogModal.component';
+import DialogModal from './DialogModal.component';
+import ProgressBar from './ProgressBar.component';
 import { withStyles } from '@material-ui/core/styles';
 import firebase from '../../firebase';
 
@@ -103,7 +104,7 @@ class Chat extends React.Component {
   uploadFile = (file, metadata) => {
     const pathToUpload = this.state.channel.id;
     const ref = this.props.messagesRef;
-    const filePath = `chat/public/${uuidv4().jpg}`;
+    const filePath = `chat/public/${uuidv4()}.jpg}`;
 
     this.setState(
       {
@@ -163,7 +164,7 @@ class Chat extends React.Component {
       });
   };
   render() {
-    const { loading, errors, message, dialog } = this.state;
+    const { loading, errors, message, dialog, percentUploaded, uploadState } = this.state;
     const { classes } = this.props;
     return (
       <React.Fragment>
@@ -215,6 +216,10 @@ class Chat extends React.Component {
                 </InputAdornment>
               )
             }}
+          />
+          <ProgressBar 
+          uploadState={uploadState}
+          percentUploaded={percentUploaded}
           />
         </Container>
       </React.Fragment>

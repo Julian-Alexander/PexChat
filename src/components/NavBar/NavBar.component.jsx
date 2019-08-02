@@ -14,7 +14,7 @@ const useStyles = makeStyles({
   }
 });
 
-export default function IconLabelTabs() {
+export default function NavBar() {
   const currentChannel = useSelector(state => state.channel.currentChannel);
   const currentUser = useSelector(state => state.user.currentUser);
   const classes = useStyles();

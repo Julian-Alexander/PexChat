@@ -173,7 +173,7 @@ const Channels = props => {
         onClick={event => ItemClickAndChangeChannel(channel, event, index)}
       >
         <ListItemAvatar>
-          <Avatar className={classes.channelAvatar}>{index}</Avatar>
+          <Avatar className={classes.channelAvatar}>{index + 1}</Avatar>
         </ListItemAvatar>
         <ListItemText
           primary={channel.title}
