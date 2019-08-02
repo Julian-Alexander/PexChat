@@ -5,6 +5,7 @@ import {
   TextField,
   Container
 } from '@material-ui/core';
+import DialogModal from '../Assets/DialogModal.component';
 import { withStyles } from '@material-ui/core/styles';
 import firebase from '../../firebase';
 
@@ -26,7 +27,8 @@ class Chat extends React.Component {
     message: '',
     channel: this.props.currentChannel,
     user: this.props.currentUser,
-    errors: []
+    errors: [],
+    dialog: false
   };
 
   handleChange = event => {
@@ -79,8 +81,12 @@ class Chat extends React.Component {
     }
   };
 
+  handleClickOpen = () => this.setState({ dialog: true });
+
+  handleClose = () => this.setState({ dialog: false });
+
   render() {
-    const { loading, errors, message } = this.state;
+    const { loading, errors, message, dialog } = this.state;
     const { classes } = this.props;
     return (
       <React.Fragment>
@@ -120,9 +126,11 @@ class Chat extends React.Component {
                     size='small'
                     variant='contained'
                     color='secondary'
+                    onClick={this.handleClickOpen}
                   >
                     Upload
                   </Button>
+                  <DialogModal dialog={dialog} handleClose={this.handleClose} />
                 </InputAdornment>
               )
             }}
