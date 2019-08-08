@@ -1,20 +1,20 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import Header from "./components/Header/Header.component";
-import NavBar from "./components/NavBar/NavBar.component";
-import { connect } from "react-redux";
+import Header from './components/Header/Header.component';
+import NavBar from './components/NavBar/NavBar.component';
+import { connect } from 'react-redux';
 
 import './App.scss';
 
-const App = (currentUser, currentChannel)  => {
-  console.log("loedssg",currentChannel);
+const App = (currentUser, currentChannel) => {
+  // console.log("currenctchannel app",currentChannel);
   return (
     <Grid>
       <Header />
-      <NavBar  currentChannel={currentChannel}/>
+      <NavBar currentChannel={currentChannel} />
     </Grid>
   );
-}
+};
 
 const mapStateToProps = state => ({
   currentUser: state.user.currentUser,

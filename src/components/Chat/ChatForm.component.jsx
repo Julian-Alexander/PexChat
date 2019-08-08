@@ -48,7 +48,11 @@ class Chat extends React.Component {
   };
 
   createMessage = (fileUrl = null) => {
+    const { messagesRef } = this.props;
+    const key = messagesRef.push().key;
+
     const message = {
+      id: key,
       timestamp: firebase.database.ServerValue.TIMESTAMP,
       user: {
         id: this.state.user.uid,
@@ -172,6 +176,7 @@ class Chat extends React.Component {
       percentUploaded,
       uploadState
     } = this.state;
+
     const { classes } = this.props;
     return (
       <React.Fragment>

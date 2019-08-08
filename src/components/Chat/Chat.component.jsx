@@ -10,6 +10,7 @@ class Chat extends React.Component {
   state = {
     messagesRef: firebase.database().ref('messages'),
     messages: [],
+    updater: false,
     messagesLoading: true,
     channel: this.props.currentChannel,
     user: this.props.currentUser,
@@ -24,6 +25,12 @@ class Chat extends React.Component {
     }
   }
 
+  messageUpdate = () => {
+    const { channel } = this.state;
+
+    this.addListeners(channel.id);
+  };
+
   addListeners = channelId => {
     this.addMessageListener(channelId);
   };
@@ -32,14 +39,31 @@ class Chat extends React.Component {
     let loadedMessages = [];
     this.state.messagesRef.child(channelId).on('child_added', snap => {
       loadedMessages.push(snap.val());
-      console.log('messages', loadedMessages);
+      // console.log('messages', loadedMessages);
       this.setState({
         messages: loadedMessages,
         messagesLoading: false
       });
       this.countUniqueUsers(loadedMessages);
     });
+    console.log('loadedMessages', loadedMessages);
   };
+
+  //     handleSearchMessages = () => {
+  //     const channelMessages = [...this.state.messages];
+  //     const regex = new RegExp(this.state.searchTerm, "gi");
+  //     const searchResults = channelMessages.reduce((acc, message) => {
+  //       if (
+  //         (message.content && message.content.match(regex)) ||
+  //         message.user.name.match(regex)
+  //       ) {
+  //         acc.push(message);
+  //       }
+  //       return acc;
+  //     }, []);
+  //     this.setState({ searchResults });
+  //     setTimeout(() => this.setState({ searchLoading: false }), 1000);
+  //   };
 
   countUniqueUsers = messages => {
     const uniqueUsers = messages.reduce((acc, message) => {
@@ -57,7 +81,9 @@ class Chat extends React.Component {
     messages.length > 0 &&
     messages.map(message => (
       <ChatMessages
-        key={messages.timetamp}
+        messageUpdate={this.messageUpdate}
+        key={message.timestamp}
+        currentChannel={this.state.channel}
         message={message}
         user={this.state.user}
       />
@@ -67,8 +93,8 @@ class Chat extends React.Component {
 
   render() {
     const { messagesRef, channel, messages, user, numUniqueUsers } = this.state;
-    console.log('Currentchannel', channel);
-    console.log('CurrentUser', user);
+    // console.log('Currentchannel', channel);
+    // console.log('CurrentUser', user);
     return (
       <React.Fragment>
         <div className='channel-title'>{this.displayChannelName(channel)}</div>

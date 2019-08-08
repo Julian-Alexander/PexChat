@@ -12,14 +12,19 @@ import {
   Route,
   withRouter
 } from 'react-router-dom';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider, connect } from 'react-redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import rootReducer from './reducers/index.reducer';
 import Progress from './Progress.component';
 import { setUser, clearUser } from './actions/index.action';
+import reduxThunk from 'redux-thunk';
 
-const store = createStore(rootReducer, composeWithDevTools());
+const middleware = [
+    reduxThunk,
+];
+
+const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(...middleware)));
 
 class Root extends React.Component {
   componentDidMount() {

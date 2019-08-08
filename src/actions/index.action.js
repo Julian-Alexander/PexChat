@@ -25,3 +25,12 @@ export const setCurrentChannel = channel => {
     }
   };
 };
+
+export const setChannels = channels => {
+  return {
+    type: actionTypes.SET_CHANNELS,
+    payload: {
+      channels: channels
+    }
+  };
+};

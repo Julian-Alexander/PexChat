@@ -10,6 +10,7 @@ import {
   Typography
 } from '@material-ui/core';
 import './Chat.styles.scss';
+import DialogEditModal from './DialogEditModal.component';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -32,11 +33,20 @@ const useStyles = makeStyles(theme => ({
 
 const timeFromNow = timestamp => moment(timestamp).fromNow();
 
-const ChatMessages = ({ message, user }) => {
+const ChatMessages = ({ message, currentChannel, user, messageUpdate }) => {
   const classes = useStyles();
+  const [dialog, setDialog] = React.useState(false);
 
-  const isOwnMessage = (message, user) => {
+  const handleClickOpen = () => setDialog(true);
+
+  const handleClose = () => setDialog(false);
+
+  const isOwnMessageStyle = (message, user) => {
     return message.user.id === user.uid ? classes.own : classes.others;
+  };
+
+  const isOwner = (message, user) => {
+    return message.user.id === user.uid ? handleClickOpen() : '';
   };
 
   const isImage = message => {
@@ -47,7 +57,11 @@ const ChatMessages = ({ message, user }) => {
 
   return (
     <List className={classes.root}>
-      <ListItem alignItems='flex-start' className={isOwnMessage(message, user)}>
+      <ListItem
+        alignItems='flex-start'
+        className={isOwnMessageStyle(message, user)}
+        onClick={() => isOwner(message, user)}
+      >
         <ListItemAvatar>
           <Avatar
             alt='User Avatar'
@@ -66,9 +80,17 @@ const ChatMessages = ({ message, user }) => {
                 color='textPrimary'
               >
                 {isImage(message) ? (
-                  <img src={message.image} alt="User Avatar" className='image-message' />
+                  <img
+                    src={message.image}
+                    alt='User Avatar'
+                    className='image-message'
+                  />
                 ) : (
-                  `${message.content}`
+                  `${message.content}` +
+                  ' ' +
+                  `${message.edited ? message.edited : ''}` +
+                  ' ' +
+                  `${message.deleted ? message.deleted : ''}`
                 )}
               </Typography>
               <br />
@@ -77,6 +99,14 @@ const ChatMessages = ({ message, user }) => {
           }
         />
       </ListItem>
+      <DialogEditModal
+        messageUpdate={messageUpdate}
+        user={user}
+        dialog={dialog}
+        message={message}
+        currentChannel={currentChannel}
+        handleClose={handleClose}
+      />
     </List>
   );
 };

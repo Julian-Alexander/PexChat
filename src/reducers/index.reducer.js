@@ -38,10 +38,26 @@ const channel_reducer = (state = initialChannelState, action) => {
       return state;
   }
 };
+const initialChannelTotalState = {
+  channels: null
+};
+const channels_reducer = (state = initialChannelTotalState, action) => {
+  switch (action.type) {
+    case actionTypes.SET_CHANNELS:
+      return {
+        ...state,
+        channels: action.payload.channels
+      }
+    default:
+      return state;
+  }
+};
 
 const rootReducer = combineReducers({
   user: user_reducer,
-  channel: channel_reducer
+  channel: channel_reducer,
+  channels: channels_reducer
+
 });
 
 export default rootReducer;

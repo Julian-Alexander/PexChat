@@ -52,16 +52,17 @@ const Channels = props => {
   const [channelsRef] = React.useState(firebase.database().ref('channels'));
   React.useEffect(
     props => {
-      const addListeners = () => {
-        let loadedChannels = [];
-        channelsRef.on('child_added', snap => {
-          loadedChannels.push(snap.val());
-          setChannels(loadedChannels);
+      //const addListeners = () => {
+      let loadedChannels = [];
+      channelsRef.on('child_added', snap => {
+        loadedChannels.push(snap.val());
+        setChannels(loadedChannels);
+        //   dispatch(setChannels(loadedChannels));
 
-          //   firstChannel(loadedChannels);
-        });
-      };
-      addListeners();
+        //   firstChannel(loadedChannels);
+      });
+      //};
+
       //   updateFirstLoad();
     },
     [props, channelsRef]
@@ -117,7 +118,7 @@ const Channels = props => {
         setChannelTitle('');
         setChannelDetails('');
         handleClose();
-        console.log('Test 3, channel added');
+        // console.log('Test 3, channel added');
       })
       .catch(err => {
         console.error(err);

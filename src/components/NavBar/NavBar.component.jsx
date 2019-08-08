@@ -7,6 +7,7 @@ import { BubbleChart, TrackChanges, PersonPin } from '@material-ui/icons';
 import Channels from '../Channels/Channels.component';
 import Chat from '../Chat/Chat.component';
 import { useSelector } from 'react-redux';
+// import firebase from '../../firebase';
 
 const useStyles = makeStyles({
   root: {
@@ -20,7 +21,8 @@ export default function NavBar() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const [channels] = React.useState([]);
-  console.log('currentChannel 123', currentChannel);
+  // console.log('currentChannel 123', currentChannel);
+  // console.log('channels', firebase.database().ref('channels'));
   function handleChange(event, newValue) {
     setValue(newValue);
   }
