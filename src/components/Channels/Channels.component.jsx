@@ -50,33 +50,31 @@ const Channels = props => {
   //   const [firstLoad, setFirstLoad] = React.useState(true);
   //   const [activeChannel, setActiveChannel] = React.useState('');
   const [channelsRef] = React.useState(firebase.database().ref('channels'));
+
   React.useEffect(
     props => {
-      //const addListeners = () => {
       let loadedChannels = [];
       channelsRef.on('child_added', snap => {
         loadedChannels.push(snap.val());
         setChannels(loadedChannels);
-        //   dispatch(setChannels(loadedChannels));
-
-        //   firstChannel(loadedChannels);
       });
-      //};
-
-      //   updateFirstLoad();
+      setTimeout(() => {
+        counter(loadedChannels);
+      }, 500);
     },
+    // eslint-disable-next-line
     [props, channelsRef]
   );
+
+  const counter = channels => props.countUniqueChannels(channels);
 
   React.useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
     } else {
-      const removeListeners = () => {
-        channelsRef.off();
-      };
+      
+        channelsRef.off()
 
-      removeListeners();
     }
   }, [channelsRef]);
 
@@ -96,6 +94,7 @@ const Channels = props => {
     if (isFormValid(props)) {
       addChannel();
     }
+    counter(channels);
   };
 
   const addChannel = () => {
@@ -245,8 +244,7 @@ const Channels = props => {
               type='text'
               fullWidth
             />
-            <TextField
-              autoFocus
+            <TextField            
               margin='dense'
               id='name'
               label='Description'

@@ -107,6 +107,8 @@ class DialogEditModal extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
+  handleFocus = event => event.target.select();
+
   render() {
     const { dialog, handleClose } = this.props;
 
@@ -121,10 +123,14 @@ class DialogEditModal extends React.Component {
           <DialogContentText>Modify message to edit</DialogContentText>
           <TextField
             autoFocus
+            onFocus={this.handleFocus}
             margin='dense'
             name='message'
             value={this.state.message}
             label='Edit your message here'
+            onKeyPress={e =>
+              e.key === 'Enter' ? (this.editMessage(), e.preventDefault()) : ''
+            }
             onChange={this.handleChange}
             type='text'
             fullWidth

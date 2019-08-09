@@ -20,12 +20,16 @@ export default function NavBar() {
   const currentUser = useSelector(state => state.user.currentUser);
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const [channels] = React.useState([]);
-  // console.log('currentChannel 123', currentChannel);
-  // console.log('channels', firebase.database().ref('channels'));
+  const [channelCount, setChannelCount] = React.useState();
   function handleChange(event, newValue) {
     setValue(newValue);
   }
+
+  const countUniqueChannels = channels => {
+    const counter = channels.length;
+    setChannelCount(counter);
+  };
+
   return (
     <Paper square className={classes.root}>
       <Tabs
@@ -36,11 +40,11 @@ export default function NavBar() {
         textColor='secondary'
         aria-label='icon label tabs example'
       >
-        <Tab icon={<TrackChanges />} label={`CHANNELS [${channels.length}]`} />
+        <Tab icon={<TrackChanges />} label={`CHANNELS [${channelCount}]`} />
         <Tab icon={<BubbleChart />} label='CHAT' />
         <Tab icon={<PersonPin />} label='MEMBERS' />
       </Tabs>
-      {value === 0 && <Channels />}
+      {value === 0 && <Channels countUniqueChannels={countUniqueChannels} />}
       {value === 1 && (
         <Chat
           key={currentChannel && currentChannel.id}

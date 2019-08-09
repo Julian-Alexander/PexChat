@@ -39,14 +39,12 @@ class Chat extends React.Component {
     let loadedMessages = [];
     this.state.messagesRef.child(channelId).on('child_added', snap => {
       loadedMessages.push(snap.val());
-      // console.log('messages', loadedMessages);
       this.setState({
         messages: loadedMessages,
         messagesLoading: false
       });
       this.countUniqueUsers(loadedMessages);
     });
-    console.log('loadedMessages', loadedMessages);
   };
 
   //     handleSearchMessages = () => {

@@ -194,6 +194,9 @@ class Chat extends React.Component {
             value={message}
             variant='outlined'
             id='custom-css-outlined-input'
+            onKeyPress={e =>
+              e.key === 'Enter' ? (this.sendMessage(), e.preventDefault()) : ''
+            }
             margin='dense'
             InputProps={{
               endAdornment: (
