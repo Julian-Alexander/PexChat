@@ -211,6 +211,7 @@ const Header = props => {
             </div>
             <InputBase
               placeholder='Search…'
+              // onChange={}
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput

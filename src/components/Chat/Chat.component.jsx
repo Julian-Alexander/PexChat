@@ -14,7 +14,9 @@ class Chat extends React.Component {
     messagesLoading: true,
     channel: this.props.currentChannel,
     user: this.props.currentUser,
-    numUniqueUsers: ''
+    numUniqueUsers: '',
+    // searchTerm: '',
+    // searchLoading: false
   };
 
   componentDidMount() {
@@ -46,6 +48,13 @@ class Chat extends React.Component {
       this.countUniqueUsers(loadedMessages);
     });
   };
+
+// handleSearchChange = event => {
+//   this.setState({
+//     searchTerm: event.target.value,
+//     searchLoading: true
+//   });
+// }
 
   //     handleSearchMessages = () => {
   //     const channelMessages = [...this.state.messages];

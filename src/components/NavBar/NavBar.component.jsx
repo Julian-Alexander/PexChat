@@ -5,6 +5,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { BubbleChart, TrackChanges, PersonPin } from '@material-ui/icons';
 import Channels from '../Channels/Channels.component';
+import Members from '../Members/Members.component';
 import Chat from '../Chat/Chat.component';
 import { useSelector } from 'react-redux';
 // import firebase from '../../firebase';
@@ -52,7 +53,7 @@ export default function NavBar() {
           currentUser={currentUser}
         />
       )}
-      {value === 2 && <h1>Page 2</h1>}
+      {value === 2 && <Members currentUser={currentUser} />}
     </Paper>
   );
 }
