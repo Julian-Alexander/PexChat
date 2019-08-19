@@ -123,7 +123,6 @@ class Register extends React.Component {
         .auth()
         .createUserWithEmailAndPassword(this.state.email, this.state.password)
         .then(createdUser => {
-          console.log(createdUser);
           createdUser.user
             .updateProfile({
               displayName: this.state.username,
@@ -133,7 +132,6 @@ class Register extends React.Component {
             })
             .then(() => {
               this.saveUser(createdUser).then(() => {
-                console.log('user saved');
               });
             })
             .catch(err => {

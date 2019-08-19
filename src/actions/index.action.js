@@ -26,11 +26,11 @@ export const setCurrentChannel = channel => {
   };
 };
 
-export const setChannels = channels => {
+export const setPrivateChannel = isPrivateChannel => {
   return {
-    type: actionTypes.SET_CHANNELS,
+    type: actionTypes.SET_PRIVATE_CHANNEL,
     payload: {
-      channels: channels
+      isPrivateChannel
     }
   };
 };

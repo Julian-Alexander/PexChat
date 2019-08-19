@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import './App.scss';
 
 const App = (currentUser, currentChannel) => {
-  // console.log("currenctchannel app",currentChannel);
   return (
     <Grid>
       <Header />

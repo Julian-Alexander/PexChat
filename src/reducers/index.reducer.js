@@ -38,16 +38,20 @@ const channel_reducer = (state = initialChannelState, action) => {
       return state;
   }
 };
-const initialChannelTotalState = {
-  channels: null
+
+const privateChannelInitialState = {
+  isPrivateChannel: null
 };
-const channels_reducer = (state = initialChannelTotalState, action) => {
+const private_channel_reducer = (
+  state = privateChannelInitialState,
+  action
+) => {
   switch (action.type) {
-    case actionTypes.SET_CHANNELS:
+    case actionTypes.SET_PRIVATE_CHANNEL:
       return {
         ...state,
-        channels: action.payload.channels
-      }
+        isPrivateChannel: action.payload.isPrivateChannel
+      };
     default:
       return state;
   }
@@ -56,8 +60,7 @@ const channels_reducer = (state = initialChannelTotalState, action) => {
 const rootReducer = combineReducers({
   user: user_reducer,
   channel: channel_reducer,
-  channels: channels_reducer
-
+  privateChannel: private_channel_reducer
 });
 
 export default rootReducer;

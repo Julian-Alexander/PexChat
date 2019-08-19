@@ -5,7 +5,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { BubbleChart, TrackChanges, PersonPin } from '@material-ui/icons';
 import Channels from '../Channels/Channels.component';
-import Members from '../Members/Members.component';
+import Users from '../Users/Users.component';
 import Chat from '../Chat/Chat.component';
 import { useSelector } from 'react-redux';
 // import firebase from '../../firebase';
@@ -43,7 +43,7 @@ export default function NavBar() {
       >
         <Tab icon={<TrackChanges />} label={`CHANNELS [${channelCount}]`} />
         <Tab icon={<BubbleChart />} label='CHAT' />
-        <Tab icon={<PersonPin />} label='MEMBERS' />
+        <Tab icon={<PersonPin />} label='USERS' />
       </Tabs>
       {value === 0 && <Channels countUniqueChannels={countUniqueChannels} />}
       {value === 1 && (
@@ -53,7 +53,7 @@ export default function NavBar() {
           currentUser={currentUser}
         />
       )}
-      {value === 2 && <Members currentUser={currentUser} />}
+      {value === 2 && <Users currentUser={currentUser} />}
     </Paper>
   );
 }

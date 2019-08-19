@@ -19,27 +19,42 @@ class DialogEditModal extends React.Component {
     errors: []
   };
 
+  isPrivate = () => {
+    const { messagesRef } = this.state;
+    const { privateMessagesRef } = this.props;
+
+    if (this.props.privateChat) {
+      return privateMessagesRef;
+    } else {
+      return messagesRef;
+    }
+  };
+
+  isPrivateChannel = () => {
+    const { channel } = this.state;
+    const { privateChannel } = this.props;
+    if (this.props.privateChat) {
+      return privateChannel;
+    } else {
+      return channel;
+    }
+  };
+
   editMessage = () => {
     const { handleClose, messageUpdate } = this.props;
-    const { messagesRef, channel } = this.state;
-    // console.log('asdads', user.uid);
-    // console.log('asdads', this.props.message.user.id);
 
     if (this.isOwnMessage() && this.state.message) {
-      messagesRef
-        .child(channel.id)
+      this.isPrivate()
+        .child(this.isPrivateChannel().id)
         .orderByChild('id')
         .equalTo(this.props.message.id)
         .once('value', snapshot => {
           snapshot.forEach(childSnapshot => {
-            // var childKey = childSnapshot.key;
-            // let childData = childSnapshot.val();
             childSnapshot.ref.update({
               content: this.state.message,
               edited: '(Edited)',
               deleted: ''
             });
-            // console.log('testestete', childKey, childData);
           });
         })
         .then(() => {
@@ -63,23 +78,19 @@ class DialogEditModal extends React.Component {
   isOwnMessage = () => this.props.message.user.id === this.props.user.uid;
   deleteMessage = () => {
     const { handleClose, messageUpdate } = this.props;
-    const { messagesRef, channel } = this.state;
 
     if (this.isOwnMessage()) {
-      messagesRef
-        .child(channel.id)
+      this.isPrivate()
+        .child(this.isPrivateChannel().id)
         .orderByChild('id')
         .equalTo(this.props.message.id)
         .once('value', snapshot => {
           snapshot.forEach(childSnapshot => {
-            // var childKey = childSnapshot.key;
-            // let childData = childSnapshot.val();
             childSnapshot.ref.update({
               content: '',
               edited: '',
               deleted: '(Message was deleted)'
             });
-            // console.log('testestete', childKey, childData);
           });
         })
         .then(() => {

@@ -2,28 +2,28 @@ import React from 'react';
 import ChatMessages from './ChatMessages.component';
 import ChatForm from './ChatForm.component';
 import { Container } from '@material-ui/core';
+import { connect } from 'react-redux';
 import firebase from '../../firebase';
 
 import './Chat.styles.scss';
 
-class Chat extends React.Component {
+class PrivateChat extends React.Component {
   state = {
-    messagesRef: firebase.database().ref('messages'),
+    privateChat: true,
+    privateMessagesRef: firebase.database().ref('privateMessages'),
     messages: [],
     updater: false,
     messagesLoading: true,
-    channel: this.props.currentChannel,
+    channel: this.props.privateChannel,
     user: this.props.currentUser,
-    numUniqueUsers: '',
-    // searchTerm: '',
-    // searchLoading: false
+    numUniqueUsers: ''
   };
 
   componentDidMount() {
     const { channel, user } = this.state;
-
     if (channel && user) {
       this.addListeners(channel.id);
+    } else {
     }
   }
 
@@ -39,7 +39,7 @@ class Chat extends React.Component {
 
   addMessageListener = channelId => {
     let loadedMessages = [];
-    this.state.messagesRef.child(channelId).on('child_added', snap => {
+    this.state.privateMessagesRef.child(channelId).on('child_added', snap => {
       loadedMessages.push(snap.val());
       this.setState({
         messages: loadedMessages,
@@ -48,29 +48,6 @@ class Chat extends React.Component {
       this.countUniqueUsers(loadedMessages);
     });
   };
-
-// handleSearchChange = event => {
-//   this.setState({
-//     searchTerm: event.target.value,
-//     searchLoading: true
-//   });
-// }
-
-  //     handleSearchMessages = () => {
-  //     const channelMessages = [...this.state.messages];
-  //     const regex = new RegExp(this.state.searchTerm, "gi");
-  //     const searchResults = channelMessages.reduce((acc, message) => {
-  //       if (
-  //         (message.content && message.content.match(regex)) ||
-  //         message.user.name.match(regex)
-  //       ) {
-  //         acc.push(message);
-  //       }
-  //       return acc;
-  //     }, []);
-  //     this.setState({ searchResults });
-  //     setTimeout(() => this.setState({ searchLoading: false }), 1000);
-  //   };
 
   countUniqueUsers = messages => {
     const uniqueUsers = messages.reduce((acc, message) => {
@@ -88,9 +65,12 @@ class Chat extends React.Component {
     messages.length > 0 &&
     messages.map(message => (
       <ChatMessages
+        privateChat={this.state.privateChat}
         messageUpdate={this.messageUpdate}
         key={message.timestamp}
         currentChannel={this.state.channel}
+        privateChannel={this.props.privateChannel}
+        privateMessagesRef={this.state.privateMessagesRef}
         message={message}
         user={this.state.user}
       />
@@ -99,7 +79,13 @@ class Chat extends React.Component {
   displayChannelName = channel => (channel ? `${channel.title}` : '');
 
   render() {
-    const { messagesRef, channel, messages, user, numUniqueUsers } = this.state;
+    const {
+      privateMessagesRef,
+      channel,
+      messages,
+      numUniqueUsers,
+      privateChat
+    } = this.state;
 
     return (
       <React.Fragment>
@@ -107,13 +93,18 @@ class Chat extends React.Component {
         <div className='channel-users'>{numUniqueUsers}</div>
         <Container>{this.displayMessages(messages)}</Container>
         <ChatForm
-          messagesRef={messagesRef}
-          currentChannel={channel}
-          currentUser={user}
+          privateChannel={this.props.privateChannel}
+          privateChat={privateChat}
+          currentUser={this.props.currentUser}
+          privateMessagesRef={privateMessagesRef}
         />
       </React.Fragment>
     );
   }
 }
 
-export default Chat;
+const mapStateToProps = state => ({
+  privateChannel: state.privateChannel.isPrivateChannel
+});
+
+export default connect(mapStateToProps)(PrivateChat);

@@ -72,9 +72,7 @@ const Channels = props => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
     } else {
-      
-        channelsRef.off()
-
+      channelsRef.off();
     }
   }, [channelsRef]);
 
@@ -117,7 +115,6 @@ const Channels = props => {
         setChannelTitle('');
         setChannelDetails('');
         handleClose();
-        // console.log('Test 3, channel added');
       })
       .catch(err => {
         console.error(err);
@@ -244,7 +241,7 @@ const Channels = props => {
               type='text'
               fullWidth
             />
-            <TextField            
+            <TextField
               margin='dense'
               id='name'
               label='Description'

@@ -114,7 +114,7 @@ const Header = props => {
     firebase
       .auth()
       .signOut()
-      .then(() => console.log('signed out!'));
+      .then(() => console.log('Signed Out!'));
   };
 
   function SignoutCloseMenu() {

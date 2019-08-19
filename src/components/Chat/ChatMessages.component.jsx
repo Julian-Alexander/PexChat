@@ -33,7 +33,15 @@ const useStyles = makeStyles(theme => ({
 
 const timeFromNow = timestamp => moment(timestamp).fromNow();
 
-const ChatMessages = ({ message, currentChannel, user, messageUpdate }) => {
+const ChatMessages = ({
+  message,
+  privateChat,
+  currentChannel,
+  privateChannel,
+  privateMessagesRef,
+  user,
+  messageUpdate
+}) => {
   const classes = useStyles();
   const [dialog, setDialog] = React.useState(false);
 
@@ -100,10 +108,13 @@ const ChatMessages = ({ message, currentChannel, user, messageUpdate }) => {
         />
       </ListItem>
       <DialogEditModal
+        privateChat={privateChat}
+        privateMessagesRef={privateMessagesRef}
         messageUpdate={messageUpdate}
         user={user}
         dialog={dialog}
         message={message}
+        privateChannel={privateChannel}
         currentChannel={currentChannel}
         handleClose={handleClose}
       />

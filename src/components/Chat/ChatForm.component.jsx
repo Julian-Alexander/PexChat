@@ -32,13 +32,16 @@ class Chat extends React.Component {
     percentUploaded: 0,
     message: '',
     channel: this.props.currentChannel,
+    privateChannel: this.props.privateChannel,
     user: this.props.currentUser,
     errors: [],
     dialog: false
   };
 
   componentDidMount() {
-    !this.state.channel
+    this.props.privateChat
+      ? this.setState({ loading: false })
+      : !this.state.channel
       ? this.setState({ loading: true })
       : this.setState({ loading: false });
   }
@@ -48,8 +51,7 @@ class Chat extends React.Component {
   };
 
   createMessage = (fileUrl = null) => {
-    const { messagesRef } = this.props;
-    const key = messagesRef.push().key;
+    const key = this.isPrivate().push().key;
 
     const message = {
       id: key,
@@ -68,14 +70,32 @@ class Chat extends React.Component {
     return message;
   };
 
-  sendMessage = () => {
-    const { messagesRef } = this.props;
-    const { message, channel } = this.state;
+  isPrivate = () => {
+    const { messagesRef, privateMessagesRef } = this.props;
 
-    if (message && channel) {
+    if (this.props.privateChat) {
+      return privateMessagesRef;
+    } else {
+      return messagesRef;
+    }
+  };
+
+  isPrivateChannel = () => {
+    const { channel } = this.state;
+    const { privateChannel } = this.props;
+    if (this.props.privateChat) {
+      return privateChannel;
+    } else {
+      return channel;
+    }
+  };
+
+  sendMessage = () => {
+    const { message } = this.state;
+    if (message && this.isPrivateChannel()) {
       this.setState({ loading: true });
-      messagesRef
-        .child(channel.id)
+      this.isPrivate()
+        .child(this.isPrivateChannel().id)
         .push()
         .set(this.createMessage())
         .then(() => {
@@ -88,7 +108,7 @@ class Chat extends React.Component {
             errors: this.state.errors.concat(err)
           });
         });
-    } else if (!channel) {
+    } else if (!this.isPrivateChannel()) {
       this.setState({
         errors: this.state.errors.concat({
           message: 'Choose a Channel and add a message'
@@ -105,10 +125,18 @@ class Chat extends React.Component {
 
   handleClose = () => this.setState({ dialog: false });
 
+  getPath = () => {
+    if (this.props.privateChat) {
+      return `chat/private-${this.state.privateChannel.id}`;
+    } else {
+      return 'chat/public';
+    }
+  };
+
   uploadFile = (file, metadata) => {
-    const pathToUpload = this.state.channel.id;
-    const ref = this.props.messagesRef;
-    const filePath = `chat/public/${uuidv4()}.jpg}`;
+    const pathToUpload = this.isPrivateChannel().id;
+    const ref = this.isPrivate();
+    const filePath = `${this.getPath()}/${uuidv4()}.jpg}`;
 
     this.setState(
       {
