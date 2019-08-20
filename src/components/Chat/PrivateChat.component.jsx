@@ -16,7 +16,6 @@ class PrivateChat extends React.Component {
     messagesLoading: true,
     channel: this.props.privateChannel,
     user: this.props.currentUser,
-    numUniqueUsers: '',
     listeners: []
   };
 
@@ -69,21 +68,8 @@ class PrivateChat extends React.Component {
         messages: loadedMessages,
         messagesLoading: false
       });
-      this.countUniqueUsers(loadedMessages);
     });
     this.addToListeners(channelId, this.state.privateMessagesRef, "child_added");
-  };
-
-  countUniqueUsers = messages => {
-    const uniqueUsers = messages.reduce((acc, message) => {
-      if (!acc.includes(message.user.name)) {
-        acc.push(message.user.name);
-      }
-      return acc;
-    }, []);
-    const plural = uniqueUsers.length > 1 || uniqueUsers.length === 0;
-    const numUniqueUsers = `${uniqueUsers.length} User${plural ? 's' : ''}`;
-    this.setState({ numUniqueUsers });
   };
 
   displayMessages = messages =>
@@ -108,15 +94,13 @@ class PrivateChat extends React.Component {
       privateMessagesRef,
       channel,
       messages,
-      numUniqueUsers,
       privateChat
     } = this.state;
 
     return (
       <React.Fragment>
         <div className='channel-title'>{this.displayChannelName(channel)}</div>
-        <div className='channel-users'>{numUniqueUsers}</div>
-        <Container>{this.displayMessages(messages)}</Container>
+        <Container className="container-messages">{this.displayMessages(messages)}</Container>
         <ChatForm
           privateChannel={this.props.privateChannel}
           privateChat={privateChat}

@@ -130,7 +130,7 @@ class Chat extends React.Component {
       <React.Fragment>
         <div className='channel-title'>{this.displayChannelName(channel)}</div>
         <div className='channel-users'>{numUniqueUsers}</div>
-        <Container>{this.displayMessages(messages)}</Container>
+        <Container className="container-messages">{this.displayMessages(messages)}</Container>
         <ChatForm
           messagesRef={messagesRef}
           currentChannel={channel}

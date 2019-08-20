@@ -163,7 +163,7 @@ class Chat extends React.Component {
 
   getPath = () => {
     if (this.props.privateChat) {
-      return `chat/private-${this.state.privateChannel.id}`;
+      return `chat/private/${this.state.privateChannel.id}`;
     } else {
       return 'chat/public';
     }
@@ -278,6 +278,8 @@ class Chat extends React.Component {
                     {emojiPicker && (
                       <Picker
                         set='apple'
+                        autoFocus="false"
+                        sheetSize="16"
                         emoji='point_up'
                         title='Pick Emoji'
                         onSelect={this.handleAddEmoji}

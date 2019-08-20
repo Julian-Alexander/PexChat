@@ -12,13 +12,9 @@ import {
   Avatar,
   InputBase
 } from '@material-ui/core';
-import {
-  Mail,
-  Notifications,
-  MoreVert,
-  Search
-} from '@material-ui/icons';
+import { Mail, Notifications, MoreVert, Search } from '@material-ui/icons';
 import MenuIcon from '@material-ui/icons/Menu';
+import DialogAvatarModal from '../Chat/DialogAvatarModal.component';
 
 import firebase from '../../firebase';
 
@@ -97,9 +93,14 @@ const Header = props => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [dialog, setDialog] = React.useState(false);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const handleOpen = () => setDialog(true);
+
+  const handleClose = () => setDialog(false);
 
   function handleProfileMenuOpen(event) {
     setAnchorEl(event.currentTarget);
@@ -144,7 +145,7 @@ const Header = props => {
       <MenuItem key='user' onClick={handleMenuClose} disabled={true}>
         Signed in as&nbsp;<strong>{currentUser.displayName}</strong>
       </MenuItem>
-      <MenuItem key='avatar' onClick={handleMenuClose}>
+      <MenuItem key='avatar' onClick={handleOpen}>
         Change Avatar
       </MenuItem>
       <MenuItem key='signout' onClick={SignoutCloseMenu}>
@@ -265,6 +266,11 @@ const Header = props => {
               <MoreVert />
             </IconButton>
           </div>
+          <DialogAvatarModal
+            currentUser={currentUser}
+            dialog={dialog}
+            handleClose={handleClose}
+          />
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
