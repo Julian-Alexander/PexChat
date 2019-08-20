@@ -47,9 +47,12 @@ const Channels = props => {
   const [channelTitle, setChannelTitle] = React.useState('');
   const [channelDetails, setChannelDetails] = React.useState('');
   const [channels, setChannels] = React.useState([]);
+  const [channel, setChannel] = React.useState(null);
+  const [notifications, setNotifications] = React.useState([]);
   //   const [firstLoad, setFirstLoad] = React.useState(true);
   //   const [activeChannel, setActiveChannel] = React.useState('');
   const [channelsRef] = React.useState(firebase.database().ref('channels'));
+  const [messagesRef] = React.useState(firebase.database().ref('messages'));
 
   React.useEffect(
     props => {
@@ -57,6 +60,7 @@ const Channels = props => {
       channelsRef.on('child_added', snap => {
         loadedChannels.push(snap.val());
         setChannels(loadedChannels);
+        addNotificationListener(snap.key);
       });
       setTimeout(() => {
         counter(loadedChannels);
@@ -75,6 +79,52 @@ const Channels = props => {
       channelsRef.off();
     }
   }, [channelsRef]);
+
+  const addNotificationListener = channelId => {
+    messagesRef.child(channelId).on('value', snap => {
+      if (channel) {
+        handleNotifications(
+          channelId,
+          channel.id,
+          notifications,
+          snap
+        );
+      }
+    });
+  };
+  
+  const handleNotifications = (
+    channelId,
+    currentChannelId,
+    notifications,
+    snap
+  ) => {
+    let lastTotal = 0;
+
+    let index = notifications.findIndex(
+      notification => notification.id === channelId
+    );
+
+    if (index !== -1) {
+      if (channelId !== currentChannelId) {
+        lastTotal = notifications[index].total;
+
+        if (snap.numChildren() - lastTotal > 0) {
+          notifications[index].count = snap.numChildren() - lastTotal;
+        }
+      }
+      notifications[index].lastKnownTotal = snap.numChildren();
+    } else {
+      notifications.push({
+        id: channelId,
+        total: snap.numChildren(),
+        lastKnownTotal: snap.numChildren(),
+        count: 0
+      });
+    }
+
+    setNotifications(notifications);
+  };
 
   //   const firstChannel = channels => {
   //     const firstChannel = channels[0];
@@ -150,9 +200,35 @@ const Channels = props => {
   //     setActiveChannel(channel.id);
   //   };
 
+  const getNotificationCount = channel => {
+    let count = 0;
+
+    notifications.forEach(notification => {
+      if (notification.id === channel.id) {
+        count = notification.count;
+      }
+    });
+    if (count > 0) return count;
+  };
+
   const changeChannel = channel => {
     // setActiveChan(channel);
+    clearNotifications();
     dispatch(setCurrentChannel(channel));
+    setChannel(channel);
+  };
+
+  const clearNotifications = () => {
+    let index = notifications.findIndex(
+      notification => notification.id === channel.id
+    );
+
+    if (index !== -1) {
+      let updatedNotifications = [...notifications];
+      updatedNotifications[index].total = notifications[index].lastKnownTotal;
+      updatedNotifications[index].count = 0;
+      setNotifications(updatedNotifications);
+    }
   };
 
   const displayChannels = channels =>
@@ -168,6 +244,7 @@ const Channels = props => {
         <ListItemAvatar>
           <Avatar className={classes.channelAvatar}>{index + 1}</Avatar>
         </ListItemAvatar>
+        {getNotificationCount(channel) && getNotificationCount(channel)}
         <ListItemText
           primary={channel.title}
           secondary={

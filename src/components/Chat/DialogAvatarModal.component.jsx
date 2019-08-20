@@ -58,7 +58,6 @@ class DialogModal extends React.Component {
           blob
         });
       });
-      console.log('sss', this.state.user, 'ssss', this.state.usersRef);
     }
   };
 
