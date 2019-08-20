@@ -1,14 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Divider from '@material-ui/core/Divider';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import { Add } from '@material-ui/icons';
-import Typography from '@material-ui/core/Typography';
 import {
+  List,
+  ListItem,
+  Divider,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
+  Typography,
   Dialog,
   DialogActions,
   DialogContent,
@@ -17,6 +16,7 @@ import {
   TextField,
   Button
 } from '@material-ui/core';
+import { Add } from '@material-ui/icons';
 import firebase from '../../firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCurrentChannel } from '../../actions/index.action';
@@ -143,6 +143,7 @@ const Channels = props => {
   const ItemClickAndChangeChannel = (channel, event, index) => {
     handleListItemClick(event, index);
     changeChannel(channel);
+    props.handleChange(1, 1);
   };
 
   //   const setActiveChan = channel => {

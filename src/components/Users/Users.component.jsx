@@ -177,15 +177,19 @@ class Users extends React.Component {
 
   displayUsersPanels = users =>
     users.length > 0 &&
-    users.map((user, index) => (
-      <TabPanel value={this.state.value} key={user.uid} index={index}>
-        <PrivateChat
-          key={user.uid + 'PV'}
-          privateChannel={this.props.privateChannel}
-          currentUser={this.state.user}
-        />
-      </TabPanel>
-    ));
+    users.map((user, index) => {
+      return (
+        this.state.value === index && (
+          <TabPanel value={this.state.value} key={user.uid} index={index}>
+            <PrivateChat
+              key={user.uid + 'PV'}
+              privateChannel={this.props.privateChannel}
+              currentUser={this.state.user}
+            />
+          </TabPanel>
+        )
+      );
+    });
 
   render() {
     const { users } = this.state;

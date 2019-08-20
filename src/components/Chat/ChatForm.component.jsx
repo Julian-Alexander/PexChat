@@ -9,6 +9,9 @@ import uuidv4 from 'uuid/v4';
 import DialogModal from './DialogModal.component';
 import ProgressBar from './ProgressBar.component';
 import { withStyles } from '@material-ui/core/styles';
+import { TagFaces } from '@material-ui/icons';
+import { Picker, emojiIndex } from 'emoji-mart';
+import 'emoji-mart/css/emoji-mart.css';
 import firebase from '../../firebase';
 
 import './Chat.styles.scss';
@@ -35,7 +38,8 @@ class Chat extends React.Component {
     privateChannel: this.props.privateChannel,
     user: this.props.currentUser,
     errors: [],
-    dialog: false
+    dialog: false,
+    emojiPicker: false
   };
 
   componentDidMount() {
@@ -44,6 +48,13 @@ class Chat extends React.Component {
       : !this.state.channel
       ? this.setState({ loading: true })
       : this.setState({ loading: false });
+  }
+
+  componentWillUnmount() {
+    if (this.state.uploadTask !== null) {
+      this.state.uploadTask.cancel();
+      this.setState({ uploadTask: null });
+    }
   }
 
   handleChange = event => {
@@ -125,6 +136,31 @@ class Chat extends React.Component {
 
   handleClose = () => this.setState({ dialog: false });
 
+  handleEmojiPicker = () => {
+    this.setState({ emojiPicker: !this.state.emojiPicker });
+  };
+
+  handleAddEmoji = emoji => {
+    const oldMessage = this.state.message;
+    const newMessage = this.colonToUnicode(`${oldMessage} ${emoji.colons}`);
+    this.setState({ message: newMessage, emojiPicker: false });
+  };
+
+  colonToUnicode = message => {
+    return message.replace(/:[A-Za-z0-9_+-]+:/g, x => {
+      x = x.replace(/:/g, '');
+      let emoji = emojiIndex.emojis[x];
+      if (typeof emoji !== 'undefined') {
+        let unicode = emoji.native;
+        if (typeof unicode !== 'undefined') {
+          return unicode;
+        }
+      }
+      x = ':' + x + ':';
+      return x;
+    });
+  };
+
   getPath = () => {
     if (this.props.privateChat) {
       return `chat/private-${this.state.privateChannel.id}`;
@@ -202,7 +238,8 @@ class Chat extends React.Component {
       message,
       dialog,
       percentUploaded,
-      uploadState
+      uploadState,
+      emojiPicker
     } = this.state;
 
     const { classes } = this.props;
@@ -229,6 +266,30 @@ class Chat extends React.Component {
             InputProps={{
               endAdornment: (
                 <InputAdornment position='end'>
+                  <Button
+                    disabled={loading}
+                    className={loading ? 'loading' : ''}
+                    type='submit'
+                    size='small'
+                    variant='contained'
+                    color='default'
+                    onClick={this.handleEmojiPicker}
+                  >
+                    {emojiPicker && (
+                      <Picker
+                        set='apple'
+                        emoji='point_up'
+                        title='Pick Emoji'
+                        onSelect={this.handleAddEmoji}
+                        style={{
+                          position: 'absolute',
+                          bottom: '20px',
+                          right: '20px'
+                        }}
+                      />
+                    )}
+                    <TagFaces />
+                  </Button>
                   <Button
                     disabled={loading}
                     className={loading ? 'loading' : ''}

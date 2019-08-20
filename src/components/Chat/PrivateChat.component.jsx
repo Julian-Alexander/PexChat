@@ -16,16 +16,40 @@ class PrivateChat extends React.Component {
     messagesLoading: true,
     channel: this.props.privateChannel,
     user: this.props.currentUser,
-    numUniqueUsers: ''
+    numUniqueUsers: '',
+    listeners: []
   };
 
   componentDidMount() {
-    const { channel, user } = this.state;
+    const { channel, user, listeners } = this.state;
     if (channel && user) {
+      this.removeListeners(listeners)
       this.addListeners(channel.id);
-    } else {
     }
   }
+
+  componentWillUnmount() {
+    this.removeListeners(this.state.listeners);
+  }
+
+  removeListeners = listeners => {
+    listeners.forEach(listener => {
+      listener.ref.child(listener.id).off(listener.event);
+    });
+  };
+
+  addToListeners = (id, ref, event) => {
+    const index = this.state.listeners.findIndex(listener => {
+      return (
+        listener.id === id && listener.ref === ref && listener.event === event
+      );
+    });
+
+    if (index === -1) {
+      const newListener = { id, ref, event };
+      this.setState({ listeners: this.state.listeners.concat(newListener) });
+    }
+  };
 
   messageUpdate = () => {
     const { channel } = this.state;
@@ -47,6 +71,7 @@ class PrivateChat extends React.Component {
       });
       this.countUniqueUsers(loadedMessages);
     });
+    this.addToListeners(channelId, this.state.privateMessagesRef, "child_added");
   };
 
   countUniqueUsers = messages => {

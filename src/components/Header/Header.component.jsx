@@ -1,22 +1,26 @@
 import React from 'react';
-import { fade, makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
-import Badge from '@material-ui/core/Badge';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import Avatar from '@material-ui/core/Avatar';
-import firebase from '../../firebase';
 import { useSelector } from 'react-redux';
+import { fade, makeStyles } from '@material-ui/core/styles';
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Badge,
+  MenuItem,
+  Menu,
+  Avatar,
+  InputBase
+} from '@material-ui/core';
+import {
+  Mail,
+  Notifications,
+  MoreVert,
+  Search
+} from '@material-ui/icons';
+import MenuIcon from '@material-ui/icons/Menu';
+
+import firebase from '../../firebase';
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -25,6 +29,10 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     width: 33,
     height: 33
+  },
+  avatar2: {
+    width: 25,
+    height: 25
   },
   menuButton: {
     marginRight: theme.spacing(2)
@@ -159,7 +167,7 @@ const Header = props => {
       <MenuItem>
         <IconButton aria-label='show 4 new mails' color='inherit'>
           <Badge badgeContent={4} color='secondary'>
-            <MailIcon />
+            <Mail />
           </Badge>
         </IconButton>
         <p>Messages</p>
@@ -167,7 +175,7 @@ const Header = props => {
       <MenuItem>
         <IconButton aria-label='show 11 new notifications' color='inherit'>
           <Badge badgeContent={11} color='secondary'>
-            <NotificationsIcon />
+            <Notifications />
           </Badge>
         </IconButton>
         <p>Notifications</p>
@@ -207,7 +215,7 @@ const Header = props => {
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
-              <SearchIcon />
+              <Search />
             </div>
             <InputBase
               placeholder='Search…'
@@ -223,12 +231,12 @@ const Header = props => {
           <div className={classes.sectionDesktop}>
             <IconButton aria-label='show 4 new mails' color='inherit'>
               <Badge badgeContent={4} color='secondary'>
-                <MailIcon />
+                <Mail />
               </Badge>
             </IconButton>
             <IconButton aria-label='show 17 new notifications' color='inherit'>
               <Badge badgeContent={17} color='secondary'>
-                <NotificationsIcon />
+                <Notifications />
               </Badge>
             </IconButton>
             <IconButton
@@ -239,7 +247,11 @@ const Header = props => {
               onClick={handleProfileMenuOpen}
               color='inherit'
             >
-              <AccountCircle />
+              <Avatar
+                alt='avatar'
+                src={currentUser.photoURL}
+                className={classes.avatar2}
+              />
             </IconButton>
           </div>
           <div className={classes.sectionMobile}>
@@ -250,7 +262,7 @@ const Header = props => {
               onClick={handleMobileMenuOpen}
               color='inherit'
             >
-              <MoreIcon />
+              <MoreVert />
             </IconButton>
           </div>
         </Toolbar>

@@ -15,17 +15,41 @@ class Chat extends React.Component {
     channel: this.props.currentChannel,
     user: this.props.currentUser,
     numUniqueUsers: '',
+    listeners: []
     // searchTerm: '',
     // searchLoading: false
   };
 
   componentDidMount() {
-    const { channel, user } = this.state;
-
+    const { channel, user, listeners } = this.state;
     if (channel && user) {
+      this.removeListeners(listeners)
       this.addListeners(channel.id);
     }
   }
+
+  componentWillUnmount() {
+    this.removeListeners(this.state.listeners);
+  }
+
+  removeListeners = listeners => {
+    listeners.forEach(listener => {
+      listener.ref.child(listener.id).off(listener.event);
+    });
+  };
+
+  addToListeners = (id, ref, event) => {
+    const index = this.state.listeners.findIndex(listener => {
+      return (
+        listener.id === id && listener.ref === ref && listener.event === event
+      );
+    });
+
+    if (index === -1) {
+      const newListener = { id, ref, event };
+      this.setState({ listeners: this.state.listeners.concat(newListener) });
+    }
+  };
 
   messageUpdate = () => {
     const { channel } = this.state;
@@ -47,6 +71,7 @@ class Chat extends React.Component {
       });
       this.countUniqueUsers(loadedMessages);
     });
+    this.addToListeners(channelId, this.state.messagesRef, "child_added");
   };
 
 // handleSearchChange = event => {

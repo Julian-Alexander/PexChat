@@ -1,14 +1,11 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
+import { Paper, Tabs, Tab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import { BubbleChart, TrackChanges, PersonPin } from '@material-ui/icons';
 import Channels from '../Channels/Channels.component';
 import Users from '../Users/Users.component';
 import Chat from '../Chat/Chat.component';
 import { useSelector } from 'react-redux';
-// import firebase from '../../firebase';
 
 const useStyles = makeStyles({
   root: {
@@ -21,10 +18,17 @@ export default function NavBar() {
   const currentUser = useSelector(state => state.user.currentUser);
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
+  const [show, setShow] = React.useState('none');
   const [channelCount, setChannelCount] = React.useState();
+
   function handleChange(event, newValue) {
     setValue(newValue);
+    showComp(newValue);
   }
+
+  const showComp = newValue => {
+    newValue !== 2 ? setShow('none') : setShow('block');
+  };
 
   const countUniqueChannels = channels => {
     const counter = channels.length;
@@ -41,11 +45,20 @@ export default function NavBar() {
         textColor='secondary'
         aria-label='icon label tabs example'
       >
-        <Tab icon={<TrackChanges />} label={`CHANNELS [${channelCount}]`} />
-        <Tab icon={<BubbleChart />} label='CHAT' />
-        <Tab icon={<PersonPin />} label='USERS' />
+        <Tab
+          value={0}
+          icon={<TrackChanges />}
+          label={`CHANNELS [${channelCount}]`}
+        />
+        <Tab value={1} icon={<BubbleChart />} label='CHAT' />
+        <Tab value={2} icon={<PersonPin />} label='USERS' />
       </Tabs>
-      {value === 0 && <Channels countUniqueChannels={countUniqueChannels} />}
+      {value === 0 && (
+        <Channels
+          countUniqueChannels={countUniqueChannels}
+          handleChange={handleChange}
+        />
+      )}
       {value === 1 && (
         <Chat
           key={currentChannel && currentChannel.id}
@@ -53,7 +66,11 @@ export default function NavBar() {
           currentUser={currentUser}
         />
       )}
-      {value === 2 && <Users currentUser={currentUser} />}
+      {
+        <div style={{ display: `${show}` }}>
+          <Users currentUser={currentUser} />
+        </div>
+      }
     </Paper>
   );
 }
