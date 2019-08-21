@@ -1,5 +1,5 @@
 import React from 'react';
-import mime from 'mime-types';
+// import mime from 'mime-types';
 import AvatarEditor from 'react-avatar-editor';
 import { withStyles } from '@material-ui/core/styles';
 import firebase from '../../firebase';
@@ -25,7 +25,7 @@ const styles = {
 class DialogModal extends React.Component {
   state = {
     avatarPreview: '',
-    authorized: ['image/jpeg', 'image/jpg', 'image/png'],
+    // authorized: ['image/jpeg', 'image/jpg', 'image/png'],
     croppedAvatar: '',
     uploadedCroppedAvatar: '',
     blob: '',
@@ -65,7 +65,7 @@ class DialogModal extends React.Component {
     const { storageRef, userRef, blob, metadata } = this.state;
 
     storageRef
-      .child(`avatars/user-${userRef.uid}`)
+      .child(`avatars/user/${userRef.uid}`)
       .put(blob, metadata)
       .then(snap => {
         snap.ref.getDownloadURL().then(downloadURL => {
@@ -102,24 +102,24 @@ class DialogModal extends React.Component {
       });
   };
 
-  prepareFile = () => {
-    const { file } = this.state;
-    const { uploadFile, handleClose } = this.props;
+  // prepareFile = () => {
+  //   const { file } = this.state;
+  //   const { uploadFile, handleClose } = this.props;
 
-    if (file !== null) {
-      if (this.isAuthorized(file.name)) {
-        const metadata = { contentType: mime.lookup(file.name) };
-        uploadFile(file, metadata);
-        handleClose();
-        this.clearFile();
-      }
-    }
-  };
+  //   if (file !== null) {
+  //     if (this.isAuthorized(file.name)) {
+  //       const metadata = { contentType: mime.lookup(file.name) };
+  //       uploadFile(file, metadata);
+  //       handleClose();
+  //       this.clearFile();
+  //     }
+  //   }
+  // };
 
-  isAuthorized = filename =>
-    this.state.authorized.includes(mime.lookup(filename));
+  // isAuthorized = filename =>
+  //   this.state.authorized.includes(mime.lookup(filename));
 
-  clearFile = () => this.setState({ file: null });
+  // clearFile = () => this.setState({ file: null });
 
   render() {
     const { dialog, handleClose, classes } = this.props;
