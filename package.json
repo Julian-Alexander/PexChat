@@ -9,7 +9,7 @@
     "firebase": "^6.3.3",
     "md5": "^2.2.1",
     "mime-types": "^2.1.24",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "node-sass": "^4.12.0",
     "react": "^16.8.6",
     "react-avatar-editor": "^11.0.7",
